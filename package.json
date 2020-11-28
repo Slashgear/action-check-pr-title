@@ -1,6 +1,6 @@
 {
   "name": "action-check-pr-title",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Github action to check Pull Request title based on JS Regexp",
   "main": "index.js",
   "repository": "git@github.com:Slashgear/action-check-pr-title.git",

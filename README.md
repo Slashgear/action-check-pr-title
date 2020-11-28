@@ -1,6 +1,5 @@
 <h1 align="center">Welcome to action-check-pr-title 👋</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/Slashgear/action-check-pr-title/blob/main/LICENSE" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
   </a>
@@ -12,16 +11,17 @@
 
 > Github action to check Pull Request title based on JS Regexp
 
-## Install
+## Usage
 
-```sh
-yarn install
-```
+This action allows you to include a title check of a pull request automatically. This action only works on `pull_request` events.
 
-## Run tests
+To use it, add the following steps in your workflow:
 
-```sh
-yarn test
+```yaml
+steps:
+- uses: Slashgear/action-check-pr-title@1.0.0
+  with:
+    regex: '([a-z])+' # Regex the title should match.
 ```
 
 ## Author
