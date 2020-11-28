@@ -1,0 +1,14 @@
+name: 'Check pull request title'
+description: 'Github action to check Pull Request title based on JS Regexp'
+author: 'Slashgear_'
+inputs:
+  regexp:
+    description: 'Regexp (as String) to validate the pull request title'
+    required: false
+    default: '.+'
+runs:
+  using: 'node12'
+  main: 'index.js'
+branding:
+  icon: 'type'
+  color: 'gray-dark'
