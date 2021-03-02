@@ -6,7 +6,9 @@
   <a href="https://twitter.com/Slashgear\_" target="_blank">
     <img alt="Twitter: Slashgear_" src="https://img.shields.io/twitter/follow/Slashgear_.svg?style=social" />
   </a>
-  <img alt="GitHub Actions status" src="https://github.com/Slashgear/action-check-pr-title/workflows/ci/badge.svg">
+  <a href="https://github.com/Slashgear/action-check-pr-title/actions/workflows/ci.yml" target="_blank">
+    <img alt="Continous Integration" src="https://github.com/Slashgear/action-check-pr-title/actions/workflows/ci.yml/badge.svg" />
+  </a>
 </p>
 
 > Github action to check Pull Request title based on JS Regexp
