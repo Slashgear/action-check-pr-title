@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@actions/core": "^1.2.6",
+    "@actions/github": "^1.1.0",
     "eslint-plugin-import": "2.22.1"
   },
   "devDependencies": {
