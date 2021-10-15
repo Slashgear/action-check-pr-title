@@ -1,4 +1,5 @@
 const core = require('@actions/core');
+const github = require('@actions/github');
 
 exports.run = () => {
   const { eventName } = github.context;
