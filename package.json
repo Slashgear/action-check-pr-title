@@ -27,7 +27,7 @@
   "devDependencies": {
     "@bedrockstreaming/eslint-config": "4.0.0",
     "@bedrockstreaming/prettier-config": "4.0.0",
-    "@types/jest": "^27.0.3",
+    "@types/jest": "^29.2.5",
     "@types/node": "^16.10.4",
     "@typescript-eslint/parser": "^5.22.0",
     "@vercel/ncc": "^0.36.0",
