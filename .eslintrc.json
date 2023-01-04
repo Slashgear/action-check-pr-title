@@ -1,0 +1,20 @@
+{
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "jest"],
+  "root": true,
+  "parserOptions": {
+    "ecmaVersion": 9,
+    "sourceType": "module",
+    "project": "./tsconfig.eslint.json"
+  },
+  "rules": {
+    "filenames/match-regex": "off",
+    "i18n-text/no-en": "off"
+  },
+  "env": {
+    "node": true,
+    "es6": true,
+    "jest/globals": true
+  }
+}

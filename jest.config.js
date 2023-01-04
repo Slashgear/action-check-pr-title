@@ -1,6 +1,9 @@
 module.exports = {
-  automock: true,
   clearMocks: true,
-  coverageProvider: 'v8',
-  testEnvironment: 'node',
+  moduleFileExtensions: ['js', 'ts'],
+  testMatch: ['**/*.test.js'],
+  transform: {
+    '^.+\\.ts$': 'ts-jest',
+  },
+  verbose: true,
 };

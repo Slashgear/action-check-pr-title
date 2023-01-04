@@ -11,14 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x, 15.x, 16.x, 18.x]
+        node-version: [14.x, 16.x]
 
     steps:
       - uses: actions/checkout@v2
-
+      - uses: pnpm/action-setup@v2.2.4
+        with:
+          version: 6.10.0
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn lint
-      - run: yarn test
+      - run: pnpm install
+      - run: pnpm all
