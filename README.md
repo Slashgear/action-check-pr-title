@@ -21,7 +21,7 @@ To use it, add the following steps in your workflow:
 
 ```yaml
 steps:
-  - uses: Slashgear/action-check-pr-title@v3.1.0
+  - uses: Slashgear/action-check-pr-title@v4.0.0
     with:
       regexp: '([a-z])+' # Regex the title should match.
 ```
