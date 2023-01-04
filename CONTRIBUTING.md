@@ -3,13 +3,13 @@
 ```bash
 git clone git@github.com:Slashgear/action-check-pr-title.git
 
-yarn intall
+pnpm intall
 ```
 
 Add your changes and make sure they pass lint and tests.
 
 ```
-yarn test
+pnpm test
 
-yarn lint
+pnpm lint
 ```
