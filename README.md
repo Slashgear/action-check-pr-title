@@ -12,6 +12,10 @@
 </p>
 
 > Github action to check Pull Request title based on JS Regexp
+> 
+> This action in really simple and use Github Action core library base on event of your pull requests
+> No need to install anything on your runner to use it.
+> Simple, fast, reliable 🎉
 
 ## Usage
 
