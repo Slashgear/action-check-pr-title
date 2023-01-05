@@ -32,18 +32,42 @@ describe("run", () => {
     expect(core.setFailed).not.toBeCalled();
   });
 
-  it("should fails on regexp matching", () => {
-    core.getInput.mockReturnValue("\\d");
-    run({
-      eventName: "pull_request",
-      payload: {
-        pull_request: {
-          title: "This is a pull request title",
+  describe('on failing', () => {
+    let regex;
+    let pullRequestTitle;
+    let context;
+
+    beforeEach(() => {
+      regex = '\\d';
+      pullRequestTitle = 'This is a pull request title';
+      context = {
+        eventName: 'pull_request',
+        payload: {
+          pull_request: {
+            title: pullRequestTitle,
+          },
         },
-      },
+      }
     });
-    expect(core.setFailed).toBeCalledWith(
-      'Pull Request title "This is a pull request title" failed to pass match regex - /\\d/'
-    );
-  });
+    it('should fails on regexp matching', () => {
+      core.getInput
+          .mockReturnValueOnce(regex)
+          .mockReturnValueOnce('');
+      run(context);
+      expect(core.setFailed.mock.calls[0][0]).toMatchSnapshot()
+    });
+
+    it('should fails on regexp matching with helper message if defined', () => {
+      core.getInput
+          .mockReturnValueOnce(regex)
+          .mockReturnValueOnce(`Example of matching titles:
+"[Example] example of title (US-6596)"
+`)
+      run(context);
+      expect(core.setFailed.mock.calls[0][0]).toMatchSnapshot()
+    })
+
+  })
+
+
 });
