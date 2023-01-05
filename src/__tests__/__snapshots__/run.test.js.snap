@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`run on failing should fails on regexp matching 1`] = `
+"Pull Request title "This is a pull request title" failed to pass match regexp
+Used Regexp: /\\d/
+
+"
+`;
+
+exports[`run on failing should fails on regexp matching with helper message if defined 1`] = `
+"Pull Request title "This is a pull request title" failed to pass match regexp
+Used Regexp: /\\d/
+
+Example of matching titles:
+"[Example] example of title (US-6596)"
+"
+`;

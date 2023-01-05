@@ -23,11 +23,32 @@ This action allows you to include a title check of a pull request automatically.
 
 To use it, add the following steps in your workflow:
 
+### Default usage
+
 ```yaml
 steps:
   - uses: Slashgear/action-check-pr-title@v4.0.0
     with:
       regexp: "([a-z])+" # Regex the title should match.
+```
+
+### Customize Regexp
+
+```yaml
+steps:
+  - uses: Slashgear/action-check-pr-title@v4.0.0
+    with:
+      regexp: '([a-z])+' # Regex the title should match.
+```
+
+### Add helper message
+
+```yaml
+steps:
+  - uses: Slashgear/action-check-pr-title@v4.0.0
+    with:
+      regexp: '(feat|fix|docs): .++' # Regex the title should match.
+      helpMessage: "Example: 'feat: example of title'"
 ```
 
 ## Author
