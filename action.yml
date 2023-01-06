@@ -1,14 +1,14 @@
-name: 'Check pull request title'
-description: 'Github action to check Pull Request title based on JS Regexp'
-author: 'Slashgear_'
+name: "Check pull request title"
+description: "Github action to check Pull Request title based on JS Regexp"
+author: "Slashgear_"
 inputs:
   regexp:
-    description: 'Regexp (as String) to validate the pull request title'
+    description: "Regexp (as String) to validate the pull request title"
     required: false
-    default: '.+'
+    default: ".+"
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: "node16"
+  main: "dist/index.js"
 branding:
-  icon: 'type'
-  color: 'gray-dark'
+  icon: "type"
+  color: "gray-dark"

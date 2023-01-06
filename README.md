@@ -12,7 +12,7 @@
 </p>
 
 > Github action to check Pull Request title based on JS Regexp
-> 
+>
 > This action in really simple and use Github Action core library base on event of your pull requests
 > No need to install anything on your runner to use it.
 > Simple, fast, reliable 🎉
@@ -27,7 +27,7 @@ To use it, add the following steps in your workflow:
 steps:
   - uses: Slashgear/action-check-pr-title@v4.0.0
     with:
-      regexp: '([a-z])+' # Regex the title should match.
+      regexp: "([a-z])+" # Regex the title should match.
 ```
 
 ## Author

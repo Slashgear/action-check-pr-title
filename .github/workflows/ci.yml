@@ -24,4 +24,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: pnpm install --no-frozen-lockfile
-      - run: pnpm all
+      - run: pnpm format-check
+        name: Check prettier format
+      - run: pnpm build
+        name: Compile Typescript output in lib
+      - run: pnpm package
+        name: Package action in single script with NCC
+      - run: pnpm test
+        name: Run unit test with Jest
