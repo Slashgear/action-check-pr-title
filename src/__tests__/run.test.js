@@ -49,6 +49,7 @@ describe("run", () => {
         },
       };
     });
+
     it("should fails on regexp matching", () => {
       core.getInput.mockReturnValueOnce(regex).mockReturnValueOnce("");
       run(context);
