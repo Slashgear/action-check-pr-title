@@ -15,17 +15,16 @@ export const run = (context: Context) => {
   info(`Pull Request title: "${pullRequestTitle}"`);
 
   const regex = RegExp(getInput("regexp"));
-  const helpMessage = getInput('helpMessage');
+  const helpMessage = getInput("helpMessage");
   if (!regex.test(pullRequestTitle)) {
     let message = `Pull Request title "${pullRequestTitle}" failed to pass match regexp
 Used Regexp: ${regex}
 
-`
+`;
     if (helpMessage) {
-      message = message.concat(helpMessage)
+      message = message.concat(helpMessage);
     }
 
-    setFailed(message
-    )
+    setFailed(message);
   }
 };

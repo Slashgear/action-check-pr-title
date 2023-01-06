@@ -7,9 +7,9 @@ inputs:
     required: false
     default: ".+"
   helpMessage:
-    description: 'Help message displayed in the action execution logs to help the user understand how to correct the title of the Pull Request.'
+    description: "Help message displayed in the action execution logs to help the user understand how to correct the title of the Pull Request."
     required: false
-    default: ''
+    default: ""
 runs:
   using: "node16"
   main: "dist/index.js"
