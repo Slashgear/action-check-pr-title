@@ -14,13 +14,20 @@ jest.mock("@actions/github", () => ({
   },
 }));
 
+const mockInputValues = (jestFn, mocks) => {
+  jestFn.mockImplementation((input) => {
+    return { regexp: "", helpMessage: "", ...mocks }[input];
+  });
+};
+
 describe("run", () => {
   beforeEach(() => {
-    core.getInput = jest.fn(() => ".+");
+    core.getInput = jest.fn();
     core.setFailed = jest.fn();
   });
 
   it("should pass nicely if title match regexp", () => {
+    mockInputValues(core.getInput, { regexp: "^[A-Za-z ]+$" });
     run({
       eventName: "pull_request",
       payload: {
@@ -33,12 +40,12 @@ describe("run", () => {
   });
 
   describe("on failing", () => {
-    let regex;
+    let regexp;
     let pullRequestTitle;
     let context;
 
     beforeEach(() => {
-      regex = "\\d";
+      regexp = "\\d";
       pullRequestTitle = "This is a pull request title";
       context = {
         eventName: "pull_request",
@@ -51,16 +58,18 @@ describe("run", () => {
     });
 
     it("should fails on regexp matching", () => {
-      core.getInput.mockReturnValueOnce(regex).mockReturnValueOnce("");
+      mockInputValues(core.getInput, { regexp });
       run(context);
       expect(core.setFailed.mock.calls[0][0]).toMatchSnapshot();
     });
 
     it("should fails on regexp matching with helper message if defined", () => {
-      core.getInput.mockReturnValueOnce(regex)
-        .mockReturnValueOnce(`Example of matching titles:
+      mockInputValues(core.getInput, {
+        regexp,
+        helpMessage: `Example of matching titles:
 "[Example] example of title (US-6596)"
-`);
+`,
+      });
       run(context);
       expect(core.setFailed.mock.calls[0][0]).toMatchSnapshot();
     });
