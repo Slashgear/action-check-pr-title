@@ -1,6 +1,6 @@
 {
   "name": "action-check-pr-title",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Github action to check Pull Request title based on JS Regexp",
   "repository": "git@github.com:Slashgear/action-check-pr-title.git",
   "author": "Slashgear <antoine395.caron@gmail.com>",
@@ -18,8 +18,7 @@
     "format-check": "prettier --check --ignore-unknown '**/*'",
     "package": "ncc build --source-map --license licenses.txt",
     "test": "jest --passWithNoTests",
-    "preversion": "pnpm run build",
-    "version": "pnpm run package"
+    "preversion": "pnpm run build && pnpm run package && git add ."
   },
   "dependencies": {
     "@actions/core": "^1.4.0",
