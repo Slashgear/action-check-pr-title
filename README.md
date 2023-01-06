@@ -38,7 +38,7 @@ steps:
 steps:
   - uses: Slashgear/action-check-pr-title@v4.0.0
     with:
-      regexp: '([a-z])+' # Regex the title should match.
+      regexp: "([a-z])+" # Regex the title should match.
 ```
 
 ### Add helper message
@@ -47,7 +47,7 @@ steps:
 steps:
   - uses: Slashgear/action-check-pr-title@v4.0.0
     with:
-      regexp: '(feat|fix|docs): .++' # Regex the title should match.
+      regexp: "(feat|fix|docs): .++" # Regex the title should match.
       helpMessage: "Example: 'feat: example of title'"
 ```
 
