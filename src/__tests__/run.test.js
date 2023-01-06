@@ -16,7 +16,7 @@ jest.mock("@actions/github", () => ({
 
 const mockInputValues = (jestFn, mocks) => {
   jestFn.mockImplementation((input) => {
-    return { regexp: "", helpMessage: "", ...mocks }[input];
+    return { regexp: "", flags: "", helpMessage: "", ...mocks }[input];
   });
 };
 
@@ -27,7 +27,7 @@ describe("run", () => {
   });
 
   it("should pass nicely if title match regexp", () => {
-    mockInputValues(core.getInput, { regexp: "^[A-Za-z ]+$" });
+    mockInputValues(core.getInput, { regexp: "^[a-z ]+$", flags: "i" });
     run({
       eventName: "pull_request",
       payload: {
