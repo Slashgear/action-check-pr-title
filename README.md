@@ -34,7 +34,7 @@ steps:
 
 👤 **Slashgear**
 
-- Website: http://slashgear.github.io/
+- Website: https://blog.slashgear.dev/
 - Twitter: [@Slashgear\_](https://twitter.com/Slashgear_)
 - Github: [@Slashgear](https://github.com/Slashgear)
 
