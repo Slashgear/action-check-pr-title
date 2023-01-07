@@ -39,6 +39,7 @@ steps:
   - uses: Slashgear/action-check-pr-title@v4.0.0
     with:
       regexp: "([a-z])+" # Regex the title should match.
+      flags: "i" # Flags to add to the regexp
 ```
 
 ### Add helper message
