@@ -55,9 +55,15 @@ const run = (context) => {
     }
     const pullRequestTitle = (_b = (_a = context === null || context === void 0 ? void 0 : context.payload) === null || _a === void 0 ? void 0 : _a.pull_request) === null || _b === void 0 ? void 0 : _b.title;
     (0, core_1.info)(`Pull Request title: "${pullRequestTitle}"`);
-    const regex = RegExp((0, core_1.getInput)("regexp"));
+    const regex = RegExp((0, core_1.getInput)("regexp"), (0, core_1.getInput)("flags"));
+    const helpMessage = (0, core_1.getInput)("helpMessage");
     if (!regex.test(pullRequestTitle)) {
-        (0, core_1.setFailed)(`Pull Request title "${pullRequestTitle}" failed to pass match regex - ${regex}`);
+        let message = `Pull Request title "${pullRequestTitle}" failed to pass match regexp - ${regex}
+`;
+        if (helpMessage) {
+            message = message.concat(helpMessage);
+        }
+        (0, core_1.setFailed)(message);
     }
 };
 exports.run = run;

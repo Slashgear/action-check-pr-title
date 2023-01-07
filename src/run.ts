@@ -14,10 +14,15 @@ export const run = (context: Context) => {
 
   info(`Pull Request title: "${pullRequestTitle}"`);
 
-  const regex = RegExp(getInput("regexp"));
+  const regex = RegExp(getInput("regexp"), getInput("flags"));
+  const helpMessage = getInput("helpMessage");
   if (!regex.test(pullRequestTitle)) {
-    setFailed(
-      `Pull Request title "${pullRequestTitle}" failed to pass match regex - ${regex}`
-    );
+    let message = `Pull Request title "${pullRequestTitle}" failed to pass match regexp - ${regex}
+`;
+    if (helpMessage) {
+      message = message.concat(helpMessage);
+    }
+
+    setFailed(message);
   }
 };
