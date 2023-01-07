@@ -27,7 +27,7 @@ To use it, add the following steps in your workflow:
 
 ```yaml
 steps:
-  - uses: Slashgear/action-check-pr-title@v4.2.0
+  - uses: Slashgear/action-check-pr-title@v4.3.0
     with:
       regexp: "([a-z])+" # Regex the title should match.
 ```
@@ -36,7 +36,7 @@ steps:
 
 ```yaml
 steps:
-  - uses: Slashgear/action-check-pr-title@v4.0.0
+  - uses: Slashgear/action-check-pr-title@v4.3.0
     with:
       regexp: "([a-z])+" # Regex the title should match.
       flags: "i" # Flags to add to the regexp
@@ -46,7 +46,7 @@ steps:
 
 ```yaml
 steps:
-  - uses: Slashgear/action-check-pr-title@v4.0.0
+  - uses: Slashgear/action-check-pr-title@v4.3.0
     with:
       regexp: "(feat|fix|docs): .++" # Regex the title should match.
       helpMessage: "Example: 'feat: example of title'"
