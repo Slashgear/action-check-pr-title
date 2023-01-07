@@ -58,9 +58,7 @@ const run = (context) => {
     const regex = RegExp((0, core_1.getInput)("regexp"), (0, core_1.getInput)("flags"));
     const helpMessage = (0, core_1.getInput)("helpMessage");
     if (!regex.test(pullRequestTitle)) {
-        let message = `Pull Request title "${pullRequestTitle}" failed to pass match regexp
-Used Regexp: ${regex}
-
+        let message = `Pull Request title "${pullRequestTitle}" failed to pass match regexp - ${regex}
 `;
         if (helpMessage) {
             message = message.concat(helpMessage);
