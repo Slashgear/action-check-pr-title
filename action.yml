@@ -5,7 +5,7 @@ inputs:
   regexp:
     description: "Regexp (as String) to validate the pull request title"
     required: false
-    default: ".+"
+    default: "([A-Z]+-[0-9]+|TRIVIAL)"
   flags:
     description: "Regexp flags of the object."
     required: false
@@ -13,7 +13,7 @@ inputs:
   helpMessage:
     description: "Help message displayed in the action execution logs to help the user understand how to correct the title of the Pull Request."
     required: false
-    default: ""
+    default: "Example: 'KORE-859: foo'"
 runs:
   using: "node16"
   main: "dist/index.js"
