@@ -5,7 +5,7 @@ inputs:
   regexp:
     description: "Regexp (as String) to validate the pull request title"
     required: false
-    default: "([A-Z][A-Z0-9_]+-[1-9][0-9]*|TRIVIAL|[mM]erge)"
+    default: "(([A-Z][A-Z0-9_]+-[1-9][0-9][0-9])*|TRIVIAL|[mM]erge)"
   flags:
     description: "Regexp flags of the object."
     required: false
