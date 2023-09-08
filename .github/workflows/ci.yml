@@ -31,6 +31,10 @@ jobs:
       - run: pnpm package
         name: Package action in single script with NCC
       - run: pnpm test
+        env:
+          JIRA_URL: ${{ vars.JIRA_URL }}
+          JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
+          JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
         name: Run unit test with Jest
       - name: Check if dist output is up to date with sources files
         run: |

@@ -14,8 +14,24 @@ inputs:
     description: "Help message displayed in the action execution logs to help the user understand how to correct the title of the Pull Request."
     required: false
     default: "Example: 'KORE-859: foo'"
+  jiraUrl:
+    description: "JIRA API url"
+    required: false
+    default: ""
+  jiraUsername:
+    description: "JIRA API username"
+    required: false
+    default: ""
+  jiraToken:
+    description: "JIRA API token"
+    required: false
+    default: ""
+  jiraSkipCheck:
+    description: "Skip check for JIRA parent ID for these IDs (comma separated)"
+    required: false
+    default: "merge,trivial"
 runs:
-  using: "node16"
+  using: "node20"
   main: "dist/index.js"
 branding:
   icon: "type"
