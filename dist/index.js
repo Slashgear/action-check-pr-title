@@ -152,9 +152,9 @@ const run = (context) => __awaiter(void 0, void 0, void 0, function* () {
         }
         (0, core_1.setFailed)(message);
     }
-    let flags = (0, core_1.getInput)("flags");
+    let flags = (0, core_1.getInput)("jiraIDFlags");
     flags = flags.includes("g") ? flags : flags + "g";
-    const regex2 = RegExp((0, core_1.getInput)("regexp"), flags);
+    const regex2 = RegExp((0, core_1.getInput)("jiraIDRegexp"), flags);
     if (!pullRequestTitle ||
         !(yield (0, exports.containsParentTaskID)([...pullRequestTitle.matchAll(regex2)]))) {
         const message = `Pull Request title "${pullRequestTitle}" doesn't contain JIRA parent task ID

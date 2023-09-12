@@ -16,7 +16,14 @@ jest.mock("@actions/github", () => ({
 
 const mockInputValues = (jestFn, mocks) => {
   jestFn.mockImplementation((input) => {
-    return { regexp: "", flags: "", helpMessage: "", ...mocks }[input];
+    return {
+      regexp: "",
+      flags: "",
+      helpMessage: "",
+      jiraIDRegexp: "",
+      jiraIDFlags: "",
+      ...mocks,
+    }[input];
   });
 };
 
@@ -80,6 +87,8 @@ describe("run", () => {
       mockInputValues(core.getInput, {
         regexp: "(TRIVIAL|[mM]erge|([A-Z][A-Z0-9_]+-[0-9]+))",
         flags: "",
+        jiraIDRegexp: "(TRIVIAL|[mM]erge|([A-Z][A-Z0-9_]+-[0-9]+))",
+        jiraIDFlags: "",
         jiraUrl: process.env.JIRA_URL,
         jiraUsername: process.env.JIRA_USERNAME,
         jiraToken: process.env.JIRA_TOKEN,
@@ -127,5 +136,30 @@ describe("run", () => {
         }
       });
     }
+  });
+
+  describe("Different regexes for PR and JIRA IDs", () => {
+    it("should pass", async () => {
+      mockInputValues(core.getInput, {
+        regexp: "feat\\([A-Z][A-Z0-9_]+-[0-9]+\\):",
+        flags: "",
+        jiraIDRegexp: "(TRIVIAL|[mM]erge|([A-Z][A-Z0-9_]+-[0-9]+))",
+        jiraIDFlags: "",
+        jiraUrl: process.env.JIRA_URL,
+        jiraUsername: process.env.JIRA_USERNAME,
+        jiraToken: process.env.JIRA_TOKEN,
+        jiraSkipCheck: "trivial",
+      });
+
+      await run({
+        eventName: "pull_request",
+        payload: {
+          pull_request: {
+            title: "feat(DEVEX-202): this is a title",
+          },
+        },
+      });
+      expect(core.setFailed).not.toBeCalled();
+    });
   });
 });

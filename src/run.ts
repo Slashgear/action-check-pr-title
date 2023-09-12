@@ -63,9 +63,9 @@ export const run = async (context: Context) => {
     setFailed(message);
   }
 
-  let flags = getInput("flags");
+  let flags = getInput("jiraIDFlags");
   flags = flags.includes("g") ? flags : flags + "g";
-  const regex2 = RegExp(getInput("regexp"), flags);
+  const regex2 = RegExp(getInput("jiraIDRegexp"), flags);
 
   if (
     !pullRequestTitle ||
