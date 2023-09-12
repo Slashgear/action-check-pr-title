@@ -14,8 +14,32 @@ inputs:
     description: "Help message displayed in the action execution logs to help the user understand how to correct the title of the Pull Request."
     required: false
     default: "Example: 'KORE-859: foo'"
+  jiraIDRegexp:
+    description: "Regexp (as String) to find JIRA task IDs"
+    required: false
+    default: "([A-Z][A-Z0-9_]+-[1-9][0-9]*|TRIVIAL|[mM]erge)"
+  jiraIDFlags:
+    description: "Regexp flags of the object."
+    required: false
+    default: ""
+  jiraUrl:
+    description: "JIRA API url"
+    required: false
+    default: ""
+  jiraUsername:
+    description: "JIRA API username"
+    required: false
+    default: ""
+  jiraToken:
+    description: "JIRA API token"
+    required: false
+    default: ""
+  jiraSkipCheck:
+    description: "Skip check for JIRA parent ID for these IDs (comma separated)"
+    required: false
+    default: "merge,trivial"
 runs:
-  using: "node16"
+  using: "node20"
   main: "dist/index.js"
 branding:
   icon: "type"

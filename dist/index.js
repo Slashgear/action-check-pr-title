@@ -37,23 +37,110 @@ const github = __importStar(__nccwpck_require__(7481));
 
 /***/ }),
 
-/***/ 2914:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+/***/ 4098:
+/***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = void 0;
+exports.Jira = void 0;
+class Jira {
+    constructor(apiUrl, email, token) {
+        this.apiUrl = apiUrl;
+        this.email = email;
+        this.token = token;
+    }
+    getIssue(ID, query) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const res = yield this.fetch("GET", `/rest/api/2/issue/${ID}`, {
+                query,
+            });
+            return res.json();
+        });
+    }
+    fetch(method, path, params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: "Basic " +
+                    Buffer.from(`${this.email}:${this.token}`).toString("base64"),
+            };
+            const url = this.apiUrl +
+                path +
+                (params.query ? "?" + new URLSearchParams(params.query) : "");
+            return fetch(url, Object.assign({ method: method, headers: headers }, (params.body ? { body: JSON.stringify(params.body) } : {})));
+        });
+    }
+}
+exports.Jira = Jira;
+
+
+/***/ }),
+
+/***/ 2914:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.run = exports.containsParentTaskID = void 0;
 const core_1 = __nccwpck_require__(8686);
-const run = (context) => {
+const jira_1 = __nccwpck_require__(4098);
+const containsParentTaskID = (ids) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
+    const jiraUrl = (0, core_1.getInput)("jiraUrl");
+    if (!jiraUrl) {
+        (0, core_1.warning)(`Not checking parent task because of missing JIRA URL`);
+        return true;
+    }
+    if (!ids) {
+        return false;
+    }
+    const jira = new jira_1.Jira(jiraUrl, (0, core_1.getInput)("jiraUsername"), (0, core_1.getInput)("jiraToken"));
+    const skipIDs = (0, core_1.getInput)("jiraSkipCheck").split(",");
+    for (const id of ids) {
+        const issueID = id[0];
+        (0, core_1.info)(`Checking ID ${issueID}`);
+        if (skipIDs.includes(issueID.toLowerCase())) {
+            (0, core_1.info)(`Skipping ID ${issueID}`);
+            return true;
+        }
+        const issue = yield jira.getIssue(issueID, { fields: "issuetype" });
+        if (((_b = (_a = issue.fields) === null || _a === void 0 ? void 0 : _a.issuetype) === null || _b === void 0 ? void 0 : _b.subtask) === false) {
+            (0, core_1.info)(`Found parent task ${issueID}`);
+            return true;
+        }
+    }
+    return false;
+});
+exports.containsParentTaskID = containsParentTaskID;
+const run = (context) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c, _d;
     const { eventName } = context;
     (0, core_1.info)(`Event name: ${eventName}`);
     if (eventName !== "pull_request") {
         (0, core_1.setFailed)(`Invalid event: ${eventName}, it should be use on pull_request`);
         return;
     }
-    const pullRequestTitle = (_b = (_a = context === null || context === void 0 ? void 0 : context.payload) === null || _a === void 0 ? void 0 : _a.pull_request) === null || _b === void 0 ? void 0 : _b.title;
+    const pullRequestTitle = (_d = (_c = context === null || context === void 0 ? void 0 : context.payload) === null || _c === void 0 ? void 0 : _c.pull_request) === null || _d === void 0 ? void 0 : _d.title;
     (0, core_1.info)(`Pull Request title: "${pullRequestTitle}"`);
     const regex = RegExp((0, core_1.getInput)("regexp"), (0, core_1.getInput)("flags"));
     const helpMessage = (0, core_1.getInput)("helpMessage");
@@ -65,7 +152,16 @@ const run = (context) => {
         }
         (0, core_1.setFailed)(message);
     }
-};
+    let flags = (0, core_1.getInput)("jiraIDFlags");
+    flags = flags.includes("g") ? flags : flags + "g";
+    const regex2 = RegExp((0, core_1.getInput)("jiraIDRegexp"), flags);
+    if (!pullRequestTitle ||
+        !(yield (0, exports.containsParentTaskID)([...pullRequestTitle.matchAll(regex2)]))) {
+        const message = `Pull Request title "${pullRequestTitle}" doesn't contain JIRA parent task ID
+`;
+        (0, core_1.setFailed)(message);
+    }
+});
 exports.run = run;
 
 

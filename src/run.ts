@@ -1,7 +1,44 @@
-import { info, setFailed, getInput } from "@actions/core";
+import { info, setFailed, getInput, warning } from "@actions/core";
 import { Context } from "@actions/github/lib/context";
+import { Jira } from "./jira";
 
-export const run = (context: Context) => {
+export const containsParentTaskID = async (ids: string[]): Promise<boolean> => {
+  const jiraUrl = getInput("jiraUrl");
+  if (!jiraUrl) {
+    warning(`Not checking parent task because of missing JIRA URL`);
+    return true;
+  }
+  if (!ids) {
+    return false;
+  }
+
+  const jira = new Jira(
+    jiraUrl,
+    getInput("jiraUsername"),
+    getInput("jiraToken")
+  );
+
+  const skipIDs = getInput("jiraSkipCheck").split(",");
+
+  for (const id of ids) {
+    const issueID = id[0];
+    info(`Checking ID ${issueID}`);
+    if (skipIDs.includes(issueID.toLowerCase())) {
+      info(`Skipping ID ${issueID}`);
+      return true;
+    }
+
+    const issue = await jira.getIssue(issueID, { fields: "issuetype" });
+    if (issue.fields?.issuetype?.subtask === false) {
+      info(`Found parent task ${issueID}`);
+      return true;
+    }
+  }
+
+  return false;
+};
+
+export const run = async (context: Context) => {
   const { eventName } = context;
   info(`Event name: ${eventName}`);
 
@@ -23,6 +60,19 @@ export const run = (context: Context) => {
       message = message.concat(helpMessage);
     }
 
+    setFailed(message);
+  }
+
+  let flags = getInput("jiraIDFlags");
+  flags = flags.includes("g") ? flags : flags + "g";
+  const regex2 = RegExp(getInput("jiraIDRegexp"), flags);
+
+  if (
+    !pullRequestTitle ||
+    !(await containsParentTaskID([...pullRequestTitle.matchAll(regex2)]))
+  ) {
+    const message = `Pull Request title "${pullRequestTitle}" doesn't contain JIRA parent task ID
+`;
     setFailed(message);
   }
 };
