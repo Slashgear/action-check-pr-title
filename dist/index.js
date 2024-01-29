@@ -53,8 +53,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Jira = void 0;
+var StatusCodes;
+(function (StatusCodes) {
+    StatusCodes[StatusCodes["TOO_MANY_REQUESTS"] = 429] = "TOO_MANY_REQUESTS";
+})(StatusCodes || (StatusCodes = {}));
 class Jira {
     constructor(apiUrl, email, token) {
+        this.MAX_RETRIES = 5;
+        this.RETRY_DELAY = 1000;
         this.apiUrl = apiUrl;
         this.email = email;
         this.token = token;
@@ -77,7 +83,30 @@ class Jira {
             const url = this.apiUrl +
                 path +
                 (params.query ? "?" + new URLSearchParams(params.query) : "");
-            return fetch(url, Object.assign({ method: method, headers: headers }, (params.body ? { body: JSON.stringify(params.body) } : {})));
+            return this.fetchRetry({
+                url,
+                method: method,
+                headers: headers,
+                body: params.body ? { body: JSON.stringify(params.body) } : {},
+            }, this.MAX_RETRIES);
+        });
+    }
+    /**
+     * fetch node.js method wrapped in retry mechanism for rate limiting
+     */
+    fetchRetry(request, counter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(request.url, Object.assign({ method: request.method, headers: request.headers }, request.body));
+            if (response.status === StatusCodes.TOO_MANY_REQUESTS) {
+                yield this.sleep(this.RETRY_DELAY);
+                return yield this.fetchRetry(request, counter - 1);
+            }
+            return response;
+        });
+    }
+    sleep(delay) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((res) => setTimeout(res, delay));
         });
     }
 }
@@ -101,65 +130,79 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = exports.containsParentTaskID = void 0;
+exports.run = void 0;
 const core_1 = __nccwpck_require__(8686);
 const jira_1 = __nccwpck_require__(4098);
-const containsParentTaskID = (ids) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
-    const jiraUrl = (0, core_1.getInput)("jiraUrl");
-    if (!jiraUrl) {
-        (0, core_1.warning)(`Not checking parent task because of missing JIRA URL`);
-        return true;
-    }
-    if (!ids) {
-        return false;
-    }
-    const jira = new jira_1.Jira(jiraUrl, (0, core_1.getInput)("jiraUsername"), (0, core_1.getInput)("jiraToken"));
-    const skipIDs = (0, core_1.getInput)("jiraSkipCheck").split(",");
+const mapJiraIssues = (ids) => __awaiter(void 0, void 0, void 0, function* () {
+    const jira = new jira_1.Jira((0, core_1.getInput)("jiraUrl"), (0, core_1.getInput)("jiraUsername"), (0, core_1.getInput)("jiraToken"));
+    const issues = [];
     for (const id of ids) {
-        const issueID = id[0];
-        (0, core_1.info)(`Checking ID ${issueID}`);
-        if (skipIDs.includes(issueID.toLowerCase())) {
-            (0, core_1.info)(`Skipping ID ${issueID}`);
-            return true;
-        }
-        const issue = yield jira.getIssue(issueID, { fields: "issuetype" });
-        if (((_b = (_a = issue.fields) === null || _a === void 0 ? void 0 : _a.issuetype) === null || _b === void 0 ? void 0 : _b.subtask) === false) {
-            (0, core_1.info)(`Found parent task ${issueID}`);
-            return true;
-        }
+        const issue = yield jira.getIssue(id, { fields: "issuetype" });
+        issues.push(issue);
     }
-    return false;
+    return issues;
 });
-exports.containsParentTaskID = containsParentTaskID;
+const containsParentIssue = (issues) => {
+    return !!issues.find((issue) => { var _a, _b; return ((_b = (_a = issue === null || issue === void 0 ? void 0 : issue.fields) === null || _a === void 0 ? void 0 : _a.issuetype) === null || _b === void 0 ? void 0 : _b.subtask) === false; });
+};
+const containsSpikeIssue = (issues) => {
+    return !!issues.find((issue) => { var _a, _b; return ((_b = (_a = issue === null || issue === void 0 ? void 0 : issue.fields) === null || _a === void 0 ? void 0 : _a.issuetype) === null || _b === void 0 ? void 0 : _b.name) === "Spike"; });
+};
+const containsEpicIssue = (issues) => {
+    return !!issues.find((issue) => { var _a, _b; return ((_b = (_a = issue === null || issue === void 0 ? void 0 : issue.fields) === null || _a === void 0 ? void 0 : _a.issuetype) === null || _b === void 0 ? void 0 : _b.name) === "Epic"; });
+};
+const parsePullRequestTitle = (title) => {
+    let flags = (0, core_1.getInput)("jiraIDFlags");
+    flags = flags.includes("g") ? flags : flags + "g";
+    const regex = RegExp((0, core_1.getInput)("jiraIDRegexp"), flags);
+    return [...title.matchAll(regex)][0];
+};
 const run = (context) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c, _d;
+    var _a, _b, _c;
     const { eventName } = context;
     (0, core_1.info)(`Event name: ${eventName}`);
     if (eventName !== "pull_request") {
         (0, core_1.setFailed)(`Invalid event: ${eventName}, it should be use on pull_request`);
         return;
     }
-    const pullRequestTitle = (_d = (_c = context === null || context === void 0 ? void 0 : context.payload) === null || _c === void 0 ? void 0 : _c.pull_request) === null || _d === void 0 ? void 0 : _d.title;
+    const pullRequestTitle = (_b = (_a = context === null || context === void 0 ? void 0 : context.payload) === null || _a === void 0 ? void 0 : _a.pull_request) === null || _b === void 0 ? void 0 : _b.title;
     (0, core_1.info)(`Pull Request title: "${pullRequestTitle}"`);
+    // We first check if PR title format is valid
     const regex = RegExp((0, core_1.getInput)("regexp"), (0, core_1.getInput)("flags"));
     const helpMessage = (0, core_1.getInput)("helpMessage");
     if (!regex.test(pullRequestTitle)) {
-        let message = `Pull Request title "${pullRequestTitle}" failed to pass match regexp - ${regex}
-`;
+        let message = `Pull Request title "${pullRequestTitle}" failed to pass match regexp - ${regex}\n`;
         if (helpMessage) {
             message = message.concat(helpMessage);
         }
         (0, core_1.setFailed)(message);
+        return;
     }
-    let flags = (0, core_1.getInput)("jiraIDFlags");
-    flags = flags.includes("g") ? flags : flags + "g";
-    const regex2 = RegExp((0, core_1.getInput)("jiraIDRegexp"), flags);
-    if (!pullRequestTitle ||
-        !(yield (0, exports.containsParentTaskID)([...pullRequestTitle.matchAll(regex2)]))) {
-        const message = `Pull Request title "${pullRequestTitle}" doesn't contain JIRA parent task ID
-`;
+    const issueIds = parsePullRequestTitle(pullRequestTitle);
+    // In a case that pull request contains some of the jiraSkipCheck keywords
+    // we skip the Jira check, for example in a case of TRIVIAL issue
+    const skipIDs = ((_c = (0, core_1.getInput)("jiraSkipCheck")) === null || _c === void 0 ? void 0 : _c.split(",")) || [];
+    if (issueIds.find((id) => skipIDs.includes(id.toLowerCase()))) {
+        return;
+    }
+    const message = `Pull Request title "${pullRequestTitle}" doesn"t contain JIRA parent issue ID\n`;
+    if (!pullRequestTitle || issueIds.length === 0) {
         (0, core_1.setFailed)(message);
+        return;
+    }
+    if (!(0, core_1.getInput)("jiraUrl")) {
+        (0, core_1.warning)(`Not checking the issues because of missing JIRA URL`);
+        return;
+    }
+    const issues = yield mapJiraIssues(issueIds);
+    if (!containsParentIssue(issues)) {
+        (0, core_1.setFailed)(message);
+    }
+    if (containsSpikeIssue(issues)) {
+        (0, core_1.setFailed)("Pull Request title contains a Spike issue, which is not allowed\n");
+    }
+    if (containsEpicIssue(issues)) {
+        (0, core_1.setFailed)("Pull Request title contains an Epic issue, which is not allowed\n");
     }
 });
 exports.run = run;

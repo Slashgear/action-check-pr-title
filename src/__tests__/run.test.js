@@ -108,14 +108,24 @@ describe("run", () => {
         success: false,
       },
       {
-        name: "Should pass on parent task",
-        title: "DEVEX-202 This is a pull request title",
+        name: "Should pass on parent issue",
+        title: "DEVEX-102 This is a pull request title",
         success: true,
       },
       {
-        name: "Should pass on parent task and subtask",
-        title: "DEVEX-202 DEVEX-207 This is a pull request title",
+        name: "Should pass on parent issue and subtask",
+        title: "DEVEX-102 DEVEX-207 This is a pull request title",
         success: true,
+      },
+      {
+        name: "Should fail on Spike issue",
+        title: "DEVEX-202 his is a pull request title",
+        success: false,
+      },
+      {
+        name: "Should fail on Epic issue",
+        title: "DEVEX-123 his is a pull request title",
+        success: false,
       },
     ];
 
@@ -155,7 +165,7 @@ describe("run", () => {
         eventName: "pull_request",
         payload: {
           pull_request: {
-            title: "feat(DEVEX-202): this is a title",
+            title: "feat(DEVEX-102): this is a title",
           },
         },
       });
