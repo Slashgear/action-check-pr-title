@@ -76,3 +76,10 @@ This project is [MIT](https://github.com/Slashgear/action-check-pr-title/blob/ma
 ---
 
 _This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
+\n## Stale PRs
+
+Stale pull requests (PRs) are those that have not had any activity for a certain period of time. It's important to manage stale PRs to keep the project's pull requests manageable and to ensure that contributions are either moving forward or being closed if they are no longer relevant.
+
+Stale PRs are managed by using the [Stale](https://github.com/actions/stale):
+- PRs with no activity for 30 days are marked as stale
+- stale PRs for 10 days are closed
