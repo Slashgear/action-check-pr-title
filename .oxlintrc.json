@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "deny",
+    "suspicious": "deny",
+    "perf": "deny"
+  },
+  "plugins": [
+    "typescript",
+    "unicorn",
+    "oxc",
+    "node",
+    "import",
+    "promise",
+    "vitest"
+  ],
+  "rules": {
+    "jest/no-hooks": "off",
+    "eslint/sort-keys": "off"
+  }
+}

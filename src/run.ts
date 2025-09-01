@@ -1,5 +1,5 @@
-import { info, setFailed, getInput } from "@actions/core";
-import { Context } from "@actions/github/lib/context";
+import { getInput, info, setFailed } from "@actions/core";
+import type { Context } from "@actions/github/lib/context";
 
 export const run = (context: Context) => {
   const { eventName } = context;
