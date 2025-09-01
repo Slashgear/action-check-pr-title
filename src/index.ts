@@ -1,4 +1,4 @@
 import { run } from "./run";
-import * as github from "@actions/github";
+import { context } from "@actions/github";
 
-run(github.context);
+run(context);
