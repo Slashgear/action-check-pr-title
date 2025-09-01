@@ -25,6 +25,8 @@ jobs:
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm format-check
         name: Check prettier format
+      - run: pnpm lint
+        name: Lint
       - run: pnpm build
         name: Compile Typescript output in lib
       - run: pnpm package
